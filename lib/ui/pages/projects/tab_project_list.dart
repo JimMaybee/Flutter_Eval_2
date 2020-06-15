@@ -26,7 +26,7 @@ class ProjectListTab extends StatelessWidget {
                     },
                     child: Container(
                       color: selectedProject == project
-                          ? CupertinoColors.systemGreen
+                          ? CupertinoColors.quaternaryLabel
                           : null,
                       child: Center(
                         child: Padding(

@@ -10,10 +10,20 @@ class ProjectDetailsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var project = context.watch<ProjectController>().selectedProject;
+    bool editing = context.watch<ProjectController>().editing;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text('Project Details'),
+        trailing: GestureDetector(
+          onTap: () {
+            context.read<ProjectController>().toggleEditing();
+          },
+          child: Text(
+            context.watch<ProjectController>().editing ? "Done" : "Edit",
+            style: TextStyle(color: CupertinoColors.activeBlue),
+          ),
+        ),
       ),
       child: project == null
           ? Center(
@@ -25,15 +35,17 @@ class ProjectDetailsTab extends StatelessWidget {
                 ),
               ),
             )
-          : _ProjectDetails(project),
+          : _ProjectDetails(project, editing),
     );
   }
 }
 
 class _ProjectDetails extends StatefulWidget {
   final Project project;
+  final bool editing;
 
-  _ProjectDetails(this.project) : super(key: ValueKey(project.id));
+  _ProjectDetails(this.project, this.editing)
+      : super(key: ValueKey(project.id));
 
   @override
   __ProjectDetailsState createState() => __ProjectDetailsState();
@@ -64,16 +76,22 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
   }
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _cityController.dispose();
+    _addressController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       duration: Duration(milliseconds: 300),
       opacity: fadeInOpacity,
-      child: Container(
-          child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: ListView(
           children: [
             Row(
               children: [
@@ -92,7 +110,7 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: false,
+                      enabled: widget.editing,
                     ))
               ],
             ),
@@ -114,7 +132,7 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: false,
+                      enabled: widget.editing,
                     ))
               ],
             ),
@@ -136,7 +154,7 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: false,
+                      enabled: widget.editing,
                     ))
               ],
             ),
@@ -160,13 +178,13 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: false,
+                      enabled: widget.editing,
                     ))
               ],
             ),
           ],
         ),
-      )),
+      ),
     );
   }
 }
