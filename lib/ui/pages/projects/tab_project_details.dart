@@ -35,17 +35,19 @@ class ProjectDetailsTab extends StatelessWidget {
                 ),
               ),
             )
-          : _ProjectDetails(project, editing),
+          : _ProjectDetails(
+              project, editing, context.watch<ProjectController>()),
     );
   }
 }
 
 class _ProjectDetails extends StatefulWidget {
-  final Project project;
-  final bool editing;
+  final Project _project;
+  final bool _editing;
+  final ProjectController _projectController;
 
-  _ProjectDetails(this.project, this.editing)
-      : super(key: ValueKey(project.id));
+  _ProjectDetails(this._project, this._editing, this._projectController)
+      : super(key: ValueKey(_project.id));
 
   @override
   __ProjectDetailsState createState() => __ProjectDetailsState();
@@ -62,12 +64,18 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.project.name);
-    _addressController = TextEditingController(text: widget.project.address);
+    _nameController = TextEditingController(text: widget._project.name);
+    _addressController = TextEditingController(text: widget._project.address);
     _cityController =
-        TextEditingController(text: widget.project.cityAndProvince);
-    _noteController = TextEditingController(text: widget.project.notes);
+        TextEditingController(text: widget._project.cityAndProvince);
+    _noteController = TextEditingController(text: widget._project.notes);
 
+    widget._projectController.registerTextFieldControllers(
+      _nameController,
+      _addressController,
+      _cityController,
+      _noteController,
+    );
     Future.delayed(Duration.zero, () {
       setState(() {
         fadeInOpacity = 1;
@@ -110,7 +118,7 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: widget.editing,
+                      enabled: widget._editing,
                     ))
               ],
             ),
@@ -132,7 +140,7 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: widget.editing,
+                      enabled: widget._editing,
                     ))
               ],
             ),
@@ -154,7 +162,7 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: widget.editing,
+                      enabled: widget._editing,
                     ))
               ],
             ),
@@ -178,7 +186,7 @@ class __ProjectDetailsState extends State<_ProjectDetails> {
                           Radius.circular(8),
                         ),
                       ),
-                      enabled: widget.editing,
+                      enabled: widget._editing,
                     ))
               ],
             ),
